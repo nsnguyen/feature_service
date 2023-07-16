@@ -11,6 +11,9 @@ ENV POETRY_CACHE_DIR=/opt/.cache
 # Create stage for Poetry installation
 FROM python-base as poetry-base
 
+# TODO: test for snappy (not working. Will remove later.)
+# RUN apt-get update && apt-get install libsnappy-dev libtool automake autoconf -y
+
 # Creating a virtual environment just for poetry and install it with pip
 RUN python3 -m venv $POETRY_VENV \
     && $POETRY_VENV/bin/pip install -U pip setuptools \
