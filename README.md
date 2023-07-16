@@ -1,2 +1,2 @@
 # feature_service
-feature_service demo
+`uvicorn app.main:app --reload`
