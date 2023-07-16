@@ -1,2 +1,6 @@
 # feature_service
-`uvicorn app.main:app --reload`
+
+## To ssh into redis
+```
+docker exec -it redis redis-cli
+```
