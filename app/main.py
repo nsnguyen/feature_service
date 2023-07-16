@@ -30,7 +30,7 @@ def read_root():
     return {"Hello": "TESTTEST "}
 
 
-@app.post("/feature")
+@app.post("/write_feature")
 async def create_feature(user: User):
     LOGGER.info('=====create_feature=====')
     first_name = xxhash.xxh32('first_name', seed=0).hexdigest()
