@@ -9,12 +9,13 @@ docker exec -it redis redis-cli
 ```
 curl -d '{
     "id": 1,
-    "first_name": "Santa",
-    "last_name": "Claus",
-    "large_payload": "qC76miCl05XITh2E3J8ddq3KYkzw04ky7WbTgBmJ1UzyTY9tXVsXOrl0Syld0leExmnCixCd0nfhF9yfkaB0GvPsNCLhtsrqA2Aa4tsL9"}' -H "Content-Type: application/json" -X POST http://0.0.0.0:8001/write_feature
+    "feature_version": "2",
+    "avg_spot_rate": "2222",
+    "ftl_rate_count": "5678"
+    }' -H "Content-Type: application/json" -X POST http://0.0.0.0:8001/write_feature
 ```
 
 ## curl GET
 ```
-curl -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://0.0.0.0:8001/feature/1/last_name
+curl -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://0.0.0.0:8001//feature/ftl_rate_count/version/2/shipment_guid/1
 ```

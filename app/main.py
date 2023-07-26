@@ -13,11 +13,11 @@ LOGGER = logging.getLogger(__name__)
 import zstd
 
     
-class User(BaseModel):
+class ShipmentGroup(BaseModel):
     id: int
-    first_name: str
-    last_name: str
-    large_payload: str
+    feature_version: str
+    avg_spot_rate: str
+    ftl_rate_count: str
     
 
 app = FastAPI()
@@ -31,28 +31,28 @@ def read_root():
 
 
 @app.post("/write_feature")
-async def create_feature(user: User):
-    LOGGER.info('=====create_feature=====')
-    first_name = xxhash.xxh32('first_name', seed=0).hexdigest()
-    r.hset(user.id , first_name, zstd.compress(user.first_name.encode()))
+async def create_feature(shipment: ShipmentGroup):
+    LOGGER.info('=====create_feature=====', shipment.feature_version)
+    avg_spot_rate = xxhash.xxh32(f"avg_spot_rate_{shipment.feature_version}", seed=0).hexdigest()
+    r.hset(shipment.id , avg_spot_rate, zstd.compress(shipment.avg_spot_rate.encode()))
     
-    last_name = xxhash.xxh32('last_name', seed=0).hexdigest()
-    r.hset(user.id, last_name, zstd.compress(user.last_name.encode()))
+    ftl_rate_count = xxhash.xxh32(f"ftl_rate_count_{shipment.feature_version}", seed=0).hexdigest()
+    r.hset(shipment.id, ftl_rate_count, zstd.compress(shipment.ftl_rate_count.encode()))
     
-    large_payload = xxhash.xxh32('large_payload', seed=0).hexdigest()
-    # compression using zstd saves 50% of the space
-    # Ex: MEMORY USAGE 1
-    r.hset(user.id, large_payload, zstd.compress(user.large_payload.encode()))
+    # large_payload = xxhash.xxh32('large_payload', seed=0).hexdigest()
+    # # compression using zstd saves 50% of the space
+    # # Ex: MEMORY USAGE 1
+    # r.hset(ShipmentGroup.id, large_payload, zstd.compress(ShipmentGroup.large_payload.encode()))
     
-    # raw string is taking up a lot of space
-    # r.hset(user.id, last_name, user.large_payload)
+    # # raw string is taking up a lot of space
+    # # r.hset(ShipmentGroup.id, last_name, ShipmentGroup.large_payload)
     
     return {"message": "Feature created in Redis"}
 
 
-@app.get("/feature/{id}/{feature_name}")
-async def get_feature(id:int, feature_name: str):
+@app.get("/feature/{feature_name}/version/{version}/shipment_guid/{id}")
+async def get_feature(id:int, feature_name: str, version: str):
     LOGGER.info('=====get_feature=====')
-    feature = xxhash.xxh32(feature_name, seed=0).hexdigest()
+    feature = xxhash.xxh32(f"{feature_name}_{version}", seed=0).hexdigest()
     value = r.hget(id, feature)
     return zstd.uncompress(value)
